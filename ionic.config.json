@@ -1,0 +1,7 @@
+{
+  "name": "GeoDevidaMovil",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}

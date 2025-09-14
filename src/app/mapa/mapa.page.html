@@ -1,11 +1,12 @@
 <ion-header>
-  <ion-toolbar>
-    <ion-title>
-      <ion-title>Mapa</ion-title>
-    </ion-title>
+  <ion-toolbar color="primary">
+    <ion-title>Visor con Leaflet</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
   <div id="map"></div>
+  <ion-button class="locate-btn" (click)="locateUser()">
+    <ion-icon name="locate-outline"></ion-icon>
+  </ion-button>
 </ion-content>

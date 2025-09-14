@@ -1,21 +1,67 @@
 #map {
   width: 100%;
   height: 100%;
+  top: 0;
+  bottom: 0;
+  position: absolute; /* para que no empuje otros elementos */
 }
-
-/* Botón flotante */
-.locate-btn {
+/* Contenedor del botón flotante */
+.locate-btn-wrapper {
   position: absolute;
-  bottom: 20px;
+  top: 200px;
   right: 10px;
   z-index: 1000;
-  --background: #3880ff;
-  --color: white;
-  border-radius: 100%;
-  width: 50px;
-  height: 50px;
+
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #0D9BD7;
+  color: white;
+
   display: flex;
   justify-content: center;
   align-items: center;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+
+  overflow: visible; /* permite que el halo se vea sin afectar layout */
+}
+
+/* Icono centrado */
+.locate-btn-wrapper ion-icon {
+  font-size: 24px;
+  z-index: 2;
+  position: relative;
+}
+
+/* Halo pulsante animado */
+.pulse-halo {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background-color: rgba(56, 128, 255, 0.4);
+
+  transform: translate(-50%, -50%); /* centra el halo sobre el botón */
+  animation: pulse-soft 2s infinite;
+  z-index: 1;
+
+  pointer-events: none; /* el halo no bloquea clicks */
+}
+
+/* Animación pulsante estilo Google Maps */
+@keyframes pulse-soft {
+  0% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0.5;
+  }
+  70% {
+    transform: translate(-50%, -50%) scale(2.5);
+    opacity: 0;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0.5;
+  }
 }

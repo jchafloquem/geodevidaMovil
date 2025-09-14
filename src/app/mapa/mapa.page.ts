@@ -4,9 +4,7 @@ import { FormsModule } from '@angular/forms';
 import {
   IonContent,
   IonHeader,
-  IonTitle,
   IonToolbar,
-  IonButton,
   IonIcon
 } from '@ionic/angular/standalone';
 
@@ -14,7 +12,6 @@ import {
 import * as L from 'leaflet';
 /* Librerias capacitor */
 import { Geolocation } from '@capacitor/geolocation';
-
 /* Ionicons */
 import { addIcons } from 'ionicons';
 import { locateOutline } from 'ionicons/icons';
@@ -29,9 +26,7 @@ import { locateOutline } from 'ionicons/icons';
     FormsModule,
     IonContent,
     IonHeader,
-    IonTitle,
     IonToolbar,
-    IonButton,
     IonIcon
   ]
 })
@@ -58,7 +53,7 @@ export class MapaPage implements AfterViewInit {
     });
 
     const lightLayer = L.tileLayer(
-      'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
+      'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
       { attribution: 'DEVIDA', maxZoom: 19 }
     );
 
@@ -74,7 +69,7 @@ export class MapaPage implements AfterViewInit {
     L.control.layers(
       { 'Light': lightLayer, 'Satellite': satelliteLayer },
       undefined, // no overlays por ahora
-      { collapsed: false } // mostrar siempre el control
+      { collapsed: true } // mostrar siempre el control
     ).addTo(this.map);
 
 
@@ -101,23 +96,25 @@ export class MapaPage implements AfterViewInit {
       } else {
         // Círculo central
         this.userCircle = L.circle([lat, lng], {
-          color: '#3880ff',
-          fillColor: '#3880ff',
+          color: '#0D9BD7',
+          fillColor: '#0DA642',
           fillOpacity: 1,
-          radius: 5
-        }).addTo(this.map).bindPopup('📍 Estás aquí');
+          radius: 3,
+          weight: 1
+        }).addTo(this.map).bindPopup('📍 Estás aquí').openPopup();;
 
         // Círculo pulsante inicial
         this.pulseCircle = L.circle([lat, lng], {
-          color: '#3880ff',
+          color: '#0DA642',
           fillColor: '#3880ff',
           fillOpacity: 0.3,
-          radius: 5
+          radius: 3,
+          weight: 0
         }).addTo(this.map);
 
         // Animación pulsante
         let growing = true;
-        let radius = 5;
+        let radius = 3;
         this.pulseInterval = setInterval(() => {
           if (!this.pulseCircle) return;
 
@@ -126,14 +123,13 @@ export class MapaPage implements AfterViewInit {
             if (radius >= 50) growing = false;
           } else {
             radius -= 2;
-            if (radius <= 5) growing = true;
+            if (radius <= 3) growing = true;
           }
           this.pulseCircle.setRadius(radius);
           const opacity = 0.3 * (50 - radius) / 40 + 0.1;
           this.pulseCircle.setStyle({ fillOpacity: opacity });
         }, 50);
       }
-
       this.map.setView([lat, lng], 19);
     } catch (error) {
       console.error('Error obteniendo ubicación', error);

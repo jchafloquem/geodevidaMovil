@@ -39,8 +39,8 @@ export class MapaPage implements AfterViewInit {
   private map!: L.Map;
   private userMarker?: L.Circle;
   private userCircle?: L.Circle;      // círculo central
-private pulseCircle?: L.Circle;     // onda pulsante
-private pulseInterval?: any;
+  private pulseCircle?: L.Circle;     // onda pulsante
+  private pulseInterval?: any;
 
   constructor() {
     addIcons({ locateOutline });
@@ -53,13 +53,31 @@ private pulseInterval?: any;
   private initMap(): void {
     this.map = L.map('map', {
       center: [-9.19, -75.0152],
+      zoomControl: false,
       zoom: 5
     });
 
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-      attribution: 'DEVIDA',
-      maxZoom: 22
-    }).addTo(this.map);
+    const lightLayer = L.tileLayer(
+      'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
+      { attribution: 'DEVIDA', maxZoom: 19 }
+    );
+
+    // Mapa base: Satellite
+    const satelliteLayer = L.tileLayer(
+      'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+      { attribution: 'DEVIDA', maxZoom: 19 }
+    );
+
+
+    lightLayer.addTo(this.map);
+
+    L.control.layers(
+      { 'Light': lightLayer, 'Satellite': satelliteLayer },
+      undefined, // no overlays por ahora
+      { collapsed: false } // mostrar siempre el control
+    ).addTo(this.map);
+
+
 
     // Importante: forzar actualización del tamaño del mapa
     setTimeout(() => {
@@ -116,7 +134,7 @@ private pulseInterval?: any;
         }, 50);
       }
 
-      this.map.setView([lat, lng], 18);
+      this.map.setView([lat, lng], 19);
     } catch (error) {
       console.error('Error obteniendo ubicación', error);
     }

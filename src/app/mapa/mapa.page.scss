@@ -5,17 +5,16 @@
   bottom: 0;
   position: absolute; /* para que no empuje otros elementos */
 }
+
 /* Contenedor del botón flotante */
 .locate-btn-wrapper {
   position: absolute;
-  top: 200px;
-  right: 10px;
-  z-index: 1000;
-
+  bottom: 130px; /* 👈 mantenemos la posición */
+  right: 15px;
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background-color: #0D9BD7;
+  background: #3880ff;
   color: white;
 
   display: flex;
@@ -23,10 +22,11 @@
   align-items: center;
   cursor: pointer;
 
-  overflow: visible; /* permite que el halo se vea sin afectar layout */
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+  z-index: 1000;
+  overflow: visible;
 }
 
-/* Icono centrado */
 .locate-btn-wrapper ion-icon {
   font-size: 24px;
   z-index: 2;
@@ -43,14 +43,12 @@
   border-radius: 50%;
   background-color: rgba(56, 128, 255, 0.4);
 
-  transform: translate(-50%, -50%); /* centra el halo sobre el botón */
+  transform: translate(-50%, -50%);
   animation: pulse-soft 2s infinite;
   z-index: 1;
-
-  pointer-events: none; /* el halo no bloquea clicks */
+  pointer-events: none;
 }
 
-/* Animación pulsante estilo Google Maps */
 @keyframes pulse-soft {
   0% {
     transform: translate(-50%, -50%) scale(1);
@@ -73,34 +71,71 @@
   font-size: 12px;
 }
 
+/* Panel de GPS */
 .gps-panel {
   position: absolute;
-  bottom: 10px;
-  left: 10px;
-  right: 10px;
+  bottom: 8px;
+  left: 8px;
+  right: 8px;
   background: rgba(0, 0, 0, 0.65);
   color: #fff;
-  padding: 8px 12px;
+  border: 1px solid #fff;
   border-radius: 6px;
   font-size: 13px;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
+  z-index: 2000;
+  padding: 0;               /* dejamos que las filas definan su altura */
+  box-sizing: border-box;
+  overflow: visible;
 }
 
-.row {
+/* línea vertical central */
+.gps-panel::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 1px;
+  background: #fff;
+  transform: translateX(-0.5px);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* filas (respetamos tu alto actual) */
+.gps-panel .row {
   display: grid;
   grid-template-columns: auto 1fr auto 1fr;
-  gap: 6px;
   align-items: center;
+  padding: 6px 10px;        /* controla altura con este padding */
+  border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+  position: relative;
+  z-index: 2;               /* sobre la línea vertical */
 }
 
-.label {
+.gps-panel .row:last-child {
+  border-bottom: none;
+}
+
+/* etiquetas alineadas a la izquierda */
+.gps-panel .label {
   font-weight: 600;
   color: #ccc;
+  text-align: left;
+  white-space: nowrap;
 }
 
-.value {
-  text-align: left;
+/* valores alineados a la derecha */
+/* valores alineados a la derecha */
+.gps-panel .value {
+  text-align: right;
   font-family: monospace;
+  white-space: nowrap;
+  padding-right: 6px; /* valor base */
+}
+
+/* 👇 padding adicional SOLO a la primera columna de valores */
+.gps-panel .row .value:nth-of-type(1),
+.gps-panel .row .value:nth-of-type(3) {
+  padding-right: 12px; /* más espacio antes de la línea blanca */
 }

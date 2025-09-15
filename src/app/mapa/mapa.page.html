@@ -18,13 +18,24 @@
     backdropDismiss="false">
   </ion-loading>
   <!-- Datos de GPS -->
-  <div class="gps-info" *ngIf="gpsData">
-    <h3>Datos de GPS</h3>
-    <p><b>Lat:</b> {{ gpsData.lat | number:'1.6-6' }}</p>
-    <p><b>Lng:</b> {{ gpsData.lng | number:'1.6-6' }}</p>
-    <p><b>Altitud:</b> {{ gpsData.alt }} m</p>
-    <p><b>Velocidad:</b> {{ gpsData.vel }} m/s</p>
-    <p><b>Precisión H:</b> ±{{ gpsData.accH }} m</p>
-    <p><b>Precisión V:</b> ±{{ gpsData.accV }} m</p>
+  <div class="gps-panel" *ngIf="gpsData">
+    <div class="row">
+      <div class="label">Latitud</div>
+      <div class="value">{{ gpsData.lat | number:'1.4-4' }}</div>
+      <div class="label">Longitud</div>
+      <div class="value">{{ gpsData.lng | number:'1.4-4' }}</div>
+    </div>
+    <div class="row">
+      <div class="label">Altitud</div>
+      <div class="value">{{ gpsData.alt | number:'1.4-4' }}</div>
+      <div class="label">Velocidad</div>
+      <div class="value">{{ gpsData.vel | number:'1.4-4' }}</div>
+    </div>
+    <div class="row">
+      <div class="label">Horizontal</div>
+      <div class="value">{{ gpsData.accH | number:'1.4-4' }}</div>
+      <div class="label">Vertical</div>
+      <div class="value">{{ gpsData.accV | number:'1.4-4' }}</div>
+    </div>
   </div>
 </ion-content>

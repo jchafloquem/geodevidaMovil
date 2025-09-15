@@ -183,8 +183,5 @@ export class MapaPage implements AfterViewInit {
         this.map.removeLayer(this.pulseCircle);
         this.pulseCircle = undefined;
       }
-
-      // Resetear datos
-      this.gpsData = null;
     }
 }

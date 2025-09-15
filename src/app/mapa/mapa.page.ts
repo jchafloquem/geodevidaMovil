@@ -1,6 +1,7 @@
 import { Component, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { trashOutline } from 'ionicons/icons';
 import {
   IonContent,
   IonHeader,
@@ -50,7 +51,7 @@ export class MapaPage implements AfterViewInit {
   } | null = null;
 
   constructor() {
-    addIcons({ locateOutline });
+    addIcons({ locateOutline, trashOutline });
   }
 
   ngAfterViewInit(): void {
@@ -164,5 +165,26 @@ export class MapaPage implements AfterViewInit {
       } finally {
         this.isLoading = false;  // 👈 desactivar spinner siempre
       }
+    }
+
+    clearLocation() {
+      // Eliminar animación si existe
+      if (this.pulseInterval) {
+        clearInterval(this.pulseInterval);
+        this.pulseInterval = null;
+      }
+
+      // Eliminar círculos si existen
+      if (this.userCircle) {
+        this.map.removeLayer(this.userCircle);
+        this.userCircle = undefined;
+      }
+      if (this.pulseCircle) {
+        this.map.removeLayer(this.pulseCircle);
+        this.pulseCircle = undefined;
+      }
+
+      // Resetear datos
+      this.gpsData = null;
     }
 }

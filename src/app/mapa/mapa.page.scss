@@ -9,19 +9,17 @@
 /* Contenedor del botón flotante */
 .locate-btn-wrapper {
   position: absolute;
-  bottom: 150px; /* 👈 mantenemos la posición */
+  bottom: 200px; /* 👈 mantenemos la posición */
   right: 15px;
   width: 40px;
   height: 40px;
   border-radius: 50%;
   background: #0D9BD7;
   color: white;
-
   display: flex;
   justify-content: center;
   align-items: center;
   cursor: pointer;
-
   box-shadow: 0 2px 6px rgba(0,0,0,0.3);
   z-index: 1000;
   overflow: visible;
@@ -30,6 +28,26 @@
 .locate-btn-wrapper ion-icon {
   font-size: 24px;
   z-index: 2;
+  position: relative;
+}
+.clear-btn-wrapper {
+  position: absolute;
+  bottom: 150px;
+  right: 15px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #d11a2a; /* rojo */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+  cursor: pointer;
+  z-index: 2000;
+}
+.clear-btn-wrapper ion-icon {
+  color: #fff;
+  font-size: 24px;
   position: relative;
 }
 
@@ -60,14 +78,13 @@
   }
 }
 
-
-
 .leaflet-control-scale {
   background: rgba(255, 255, 255, 0.8);
   padding: 2px 5px;
   border-radius: 4px;
   font-size: 12px;
 }
+
 /* Panel de GPS */
 .gps-panel {
   position: absolute;

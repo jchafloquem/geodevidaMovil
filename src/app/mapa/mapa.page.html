@@ -6,9 +6,13 @@
 <ion-content>
   <div id="map"></div>
   <div class="locate-btn-wrapper" (click)="locateUser()">
-    <div class="pulse-halo"></div>
     <ion-icon name="locate-outline"></ion-icon>
   </div>
+  <!-- Botón flotante de limpiar ubicación -->
+  <div class="clear-btn-wrapper" (click)="clearLocation()">
+    <ion-icon name="trash-outline"></ion-icon>
+  </div>
+
   <!-- Spinner de carga -->
   <ion-loading
     [isOpen]="isLoading"

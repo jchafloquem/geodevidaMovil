@@ -20,22 +20,35 @@
   <!-- Datos de GPS -->
   <div class="gps-panel" *ngIf="gpsData">
     <div class="row">
-      <div class="label">Latitud</div>
-      <div class="value">{{ gpsData.lat | number:'1.4-4' }}</div>
-      <div class="label">Longitud</div>
-      <div class="value">{{ gpsData.lng | number:'1.4-4' }}</div>
+      <div class="cell">
+        <span class="label">Latitud</span>
+        <span class="value">{{ gpsData.lat | number:'1.4-4' }}</span>
+      </div>
+      <div class="cell">
+        <span class="label">Longitud</span>
+        <span class="value">{{ gpsData.lng | number:'1.4-4' }}</span>
+      </div>
     </div>
     <div class="row">
-      <div class="label">Altitud</div>
-      <div class="value">{{ gpsData.alt | number:'1.4-4' }}</div>
-      <div class="label">Velocidad</div>
-      <div class="value">{{ gpsData.vel | number:'1.4-4' }}</div>
+      <div class="cell">
+        <span class="label">Altitud</span>
+        <span class="value">{{ gpsData.alt | number:'1.4-4' }}</span>
+      </div>
+      <div class="cell">
+        <span class="label">Velocidad</span>
+        <span class="value">{{ gpsData.vel | number:'1.4-4' }}</span>
+      </div>
     </div>
     <div class="row">
-      <div class="label">Horizontal</div>
-      <div class="value">{{ gpsData.accH | number:'1.4-4' }}</div>
-      <div class="label">Vertical</div>
-      <div class="value">{{ gpsData.accV | number:'1.4-4' }}</div>
+      <div class="cell">
+        <span class="label">Horizontal</span>
+        <span class="value">{{ gpsData.accH | number:'1.4-4' }}</span>
+      </div>
+      <div class="cell">
+        <span class="label">Vertical</span>
+        <span class="value">{{ gpsData.accV | number:'1.4-4' }}</span>
+      </div>
     </div>
   </div>
+
 </ion-content>

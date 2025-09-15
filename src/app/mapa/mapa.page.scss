@@ -9,7 +9,7 @@
 /* Contenedor del botón flotante */
 .locate-btn-wrapper {
   position: absolute;
-  bottom: 130px; /* 👈 mantenemos la posición */
+  bottom: 150px; /* 👈 mantenemos la posición */
   right: 15px;
   width: 40px;
   height: 40px;
@@ -70,7 +70,6 @@
   border-radius: 4px;
   font-size: 12px;
 }
-
 /* Panel de GPS */
 .gps-panel {
   position: absolute;
@@ -83,7 +82,7 @@
   border-radius: 6px;
   font-size: 13px;
   z-index: 2000;
-  padding: 0;               /* dejamos que las filas definan su altura */
+  padding: 0;
   box-sizing: border-box;
   overflow: visible;
 }
@@ -102,40 +101,39 @@
   z-index: 1;
 }
 
-/* filas (respetamos tu alto actual) */
+/* filas de pares label/value */
 .gps-panel .row {
   display: grid;
-  grid-template-columns: auto 1fr auto 1fr;
-  align-items: center;
-  padding: 6px 10px;        /* controla altura con este padding */
+  grid-template-columns: 1fr 1fr; /* 2 columnas de celdas */
+  gap: 16px;
+  padding: 8px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+  min-height: 40px;
   position: relative;
-  z-index: 2;               /* sobre la línea vertical */
+  z-index: 2;
 }
 
 .gps-panel .row:last-child {
   border-bottom: none;
 }
 
-/* etiquetas alineadas a la izquierda */
+/* cada par label/value */
+.gps-panel .cell {
+  display: flex;
+  justify-content: space-between; /* label a la izquierda, value a la derecha */
+  align-items: center;            /* centra verticalmente */
+}
+
+/* etiquetas */
 .gps-panel .label {
   font-weight: 600;
   color: #ccc;
-  text-align: left;
   white-space: nowrap;
 }
 
-/* valores alineados a la derecha */
-/* valores alineados a la derecha */
+/* valores */
 .gps-panel .value {
-  text-align: right;
   font-family: monospace;
   white-space: nowrap;
-  padding-right: 6px; /* valor base */
-}
-
-/* 👇 padding adicional SOLO a la primera columna de valores */
-.gps-panel .row .value:nth-of-type(1),
-.gps-panel .row .value:nth-of-type(3) {
-  padding-right: 12px; /* más espacio antes de la línea blanca */
+  text-align: right;
 }

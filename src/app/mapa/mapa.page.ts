@@ -70,21 +70,21 @@ export class MapaPage implements AfterViewInit {
     );
     // Mapa base: Satellite
     const satelliteLayer = L.tileLayer(
-      'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
-      { attribution: 'DEVIDA', maxZoom: 19 }
+      'https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',
+      { attribution: 'DEVIDA', maxZoom: 20 }
     );
 
-    lightLayer.addTo(this.map);
+    satelliteLayer.addTo(this.map);
 
     L.control.layers(
-      { 'Light': lightLayer, 'Satellite': satelliteLayer },
+      { 'Satellite': satelliteLayer, 'Light': lightLayer },
       undefined,
       { collapsed: true }
     ).addTo(this.map);
 
     // --- AQUI AGREGAMOS LA BARRA DE ESCALA ---
     L.control.scale({
-      position: 'bottomleft',
+      position: 'topleft',
       metric: true,
       imperial: false,
       maxWidth: 100
@@ -115,8 +115,6 @@ export class MapaPage implements AfterViewInit {
         accV: altitudeAccuracy !== null && altitudeAccuracy !== undefined ? parseFloat(altitudeAccuracy.toFixed(2)) : 0.00,
       };
 
-
-
         const lat = latitude;
         const lng = longitude;
 
@@ -133,7 +131,6 @@ export class MapaPage implements AfterViewInit {
             radius: 3,
             weight: 1
           }).addTo(this.map)
-
 
           // Círculo pulsante inicial
           this.pulseCircle = L.circle([lat, lng], {

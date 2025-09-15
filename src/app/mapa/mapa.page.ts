@@ -5,7 +5,8 @@ import {
   IonContent,
   IonHeader,
   IonToolbar,
-  IonIcon
+  IonIcon,
+  IonLoading,
 } from '@ionic/angular/standalone';
 /* Libreria leaflet */
 import * as L from 'leaflet';
@@ -25,7 +26,8 @@ import { locateOutline } from 'ionicons/icons';
     IonContent,
     IonHeader,
     IonToolbar,
-    IonIcon
+    IonIcon,
+    IonLoading
   ]
 })
 export class MapaPage implements AfterViewInit {
@@ -34,6 +36,9 @@ export class MapaPage implements AfterViewInit {
   private userCircle?: L.Circle;      // círculo central
   private pulseCircle?: L.Circle;     // onda pulsante
   private pulseInterval?: any;
+
+  isLoading = false;   // 👈 estado del spinner
+
 
   constructor() {
     addIcons({ locateOutline });
@@ -77,18 +82,33 @@ export class MapaPage implements AfterViewInit {
       this.map.invalidateSize();
     }, 200);
   }
-    // Geolocalizacion
+    // Geolocalización con spinner
     async locateUser() {
+      this.isLoading = true;
       try {
         const coordinates = await Geolocation.getCurrentPosition({
           enableHighAccuracy: true
         });
+
+        const { latitude, longitude, altitude, accuracy, altitudeAccuracy, speed } = coordinates.coords;
+        // Guardar valores para mostrar en el template
+        this.gpsData = {
+          lat: latitude,
+          lng: longitude,
+          alt: altitude ?? 0,
+          accH: accuracy ?? 0,
+          accV: altitudeAccuracy ?? 0,
+          vel: speed ?? 0
+        };
+
+
 
         const lat = coordinates.coords.latitude;
         const lng = coordinates.coords.longitude;
         // Si ya existe círculo, actualizar posición
         if (this.userCircle) {
           this.userCircle.setLatLng([lat, lng]);
+          this.userCircle.bindPopup(this.getPopupContent());
           if (this.pulseCircle) this.pulseCircle.setLatLng([lat, lng]);
         } else {
           // Círculo central
@@ -98,7 +118,8 @@ export class MapaPage implements AfterViewInit {
             fillOpacity: 1,
             radius: 3,
             weight: 1
-          }).addTo(this.map).bindPopup('📍 Estás aquí').openPopup();;
+          }).addTo(this.map).bindPopup(this.getPopupContent()).openPopup();
+
           // Círculo pulsante inicial
           this.pulseCircle = L.circle([lat, lng], {
             color: '#0DA642',
@@ -128,6 +149,32 @@ export class MapaPage implements AfterViewInit {
         this.map.setView([lat, lng], 19);
       } catch (error) {
         console.error('Error obteniendo ubicación', error);
+      } finally {
+        this.isLoading = false;  // 👈 desactivar spinner siempre
       }
     }
+    // Objeto para almacenar los datos
+  gpsData: {
+    lat: number;
+    lng: number;
+    alt: number | null;
+    accH: number | null;
+    accV: number | null;
+    vel: number | null;
+  } | null = null;
+
+  // Genera el contenido del popup con datos GPS
+  private getPopupContent(): string {
+    if (!this.gpsData) return '📍 Estás aquí';
+    return `
+      <b>📍 Posición actual</b><br>
+      Lat: ${this.gpsData.lat.toFixed(6)}<br>
+      Lng: ${this.gpsData.lng.toFixed(6)}<br>
+      Altitud: ${this.gpsData.alt?.toFixed(2) ?? 'N/A'} m<br>
+      Velocidad: ${this.gpsData.vel?.toFixed(2) ?? 'N/A'} m/s<br>
+      Precisión H: ±${this.gpsData.accH?.toFixed(2) ?? 'N/A'} m<br>
+      Precisión V: ±${this.gpsData.accV?.toFixed(2) ?? 'N/A'} m
+    `;
+  }
+
 }

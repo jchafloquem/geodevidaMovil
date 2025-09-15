@@ -9,4 +9,22 @@
     <div class="pulse-halo"></div>
     <ion-icon name="locate-outline"></ion-icon>
   </div>
+  <!-- Spinner de carga -->
+  <ion-loading
+    [isOpen]="isLoading"
+    message="Obteniendo Geolocalización..."
+    spinner="crescent"
+    translucent="true"
+    backdropDismiss="false">
+  </ion-loading>
+  <!-- Datos de GPS -->
+  <div class="gps-info" *ngIf="gpsData">
+    <h3>Datos de GPS</h3>
+    <p><b>Lat:</b> {{ gpsData.lat | number:'1.6-6' }}</p>
+    <p><b>Lng:</b> {{ gpsData.lng | number:'1.6-6' }}</p>
+    <p><b>Altitud:</b> {{ gpsData.alt }} m</p>
+    <p><b>Velocidad:</b> {{ gpsData.vel }} m/s</p>
+    <p><b>Precisión H:</b> ±{{ gpsData.accH }} m</p>
+    <p><b>Precisión V:</b> ±{{ gpsData.accV }} m</p>
+  </div>
 </ion-content>

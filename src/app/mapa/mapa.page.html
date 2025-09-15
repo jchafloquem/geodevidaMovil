@@ -19,6 +19,7 @@
   </ion-loading>
   <!-- Datos de GPS -->
   <div class="gps-panel" *ngIf="gpsData">
+    <!-- fila Latitud / Longitud -->
     <div class="row">
       <div class="cell">
         <span class="label">Latitud</span>
@@ -29,6 +30,7 @@
         <span class="value">{{ gpsData.lng | number:'1.4-4' }}</span>
       </div>
     </div>
+    <!-- fila Altitud / Velocidad -->
     <div class="row">
       <div class="cell">
         <span class="label">Altitud</span>
@@ -39,6 +41,7 @@
         <span class="value">{{ gpsData.vel | number:'1.4-4' }}</span>
       </div>
     </div>
+    <!-- fila Horizontal / Vertical -->
     <div class="row">
       <div class="cell">
         <span class="label">Horizontal</span>
@@ -50,5 +53,4 @@
       </div>
     </div>
   </div>
-
 </ion-content>

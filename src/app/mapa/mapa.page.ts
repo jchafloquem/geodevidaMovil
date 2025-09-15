@@ -123,7 +123,6 @@ export class MapaPage implements AfterViewInit {
         // Si ya existe círculo, actualizar posición
         if (this.userCircle) {
           this.userCircle.setLatLng([lat, lng]);
-          //this.userCircle.bindPopup(this.getPopupContent());
           if (this.pulseCircle) this.pulseCircle.setLatLng([lat, lng]);
         } else {
           // Círculo central
@@ -134,7 +133,7 @@ export class MapaPage implements AfterViewInit {
             radius: 3,
             weight: 1
           }).addTo(this.map)
-          //.bindPopup(this.getPopupContent()).openPopup();
+
 
           // Círculo pulsante inicial
           this.pulseCircle = L.circle([lat, lng], {
@@ -147,20 +146,20 @@ export class MapaPage implements AfterViewInit {
           // Animación pulsante
           let growing = true;
           let radius = 3;
+          const maxRadius = 50;
+
           this.pulseInterval = setInterval(() => {
             if (!this.pulseCircle) return;
 
-            if (growing) {
-              radius += 2;
-              if (radius >= 50) growing = false;
-            } else {
-              radius -= 2;
-              if (radius <= 3) growing = true;
+            // aumentar el radio
+            radius += 1; // velocidad de crecimiento, ajustable
+            if (radius >= maxRadius) {
+              radius = 3; // reinicia para crear pulso repetido
             }
             this.pulseCircle.setRadius(radius);
-            const opacity = 0.3 * (50 - radius) / 40 + 0.1;
+            const opacity = 0.6 * (maxRadius - radius) / maxRadius; // opacidad decreciente
             this.pulseCircle.setStyle({ fillOpacity: opacity });
-          }, 50);
+            }, 50);
         }
         this.map.setView([lat, lng], 19);
       } catch (error) {

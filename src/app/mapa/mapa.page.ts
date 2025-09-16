@@ -1,4 +1,4 @@
-import { Component, AfterViewInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { trashOutline } from 'ionicons/icons';
@@ -9,10 +9,14 @@ import {
   IonIcon,
   IonLoading,
 } from '@ionic/angular/standalone';
+
 /* Libreria leaflet */
 import * as L from 'leaflet';
+import 'leaflet-draw';
+
 /* Librerias capacitor */
 import { Geolocation } from '@capacitor/geolocation';
+
 /* Ionicons */
 import { addIcons } from 'ionicons';
 import { locateOutline } from 'ionicons/icons';
@@ -29,15 +33,15 @@ import { locateOutline } from 'ionicons/icons';
     IonHeader,
     IonToolbar,
     IonIcon,
-    IonLoading
-  ]
+    IonLoading,
+  ],
 })
-export class MapaPage implements AfterViewInit {
+export class MapaPage {
   private map!: L.Map;
-  private userMarker?: L.Circle;
-  private userCircle?: L.Circle;      // círculo central
-  private pulseCircle?: L.Circle;     // onda pulsante
+  private userCircle?: L.Circle;
+  private pulseCircle?: L.Circle;
   private pulseInterval?: any;
+  private drawnItems = new L.FeatureGroup();
 
   isLoading = false;
 
@@ -54,7 +58,8 @@ export class MapaPage implements AfterViewInit {
     addIcons({ locateOutline, trashOutline });
   }
 
-  ngAfterViewInit(): void {
+  // En Ionic, mejor que ngAfterViewInit
+  ionViewDidEnter(): void {
     this.initMap();
   }
 
@@ -62,126 +67,160 @@ export class MapaPage implements AfterViewInit {
     this.map = L.map('map', {
       center: [-9.19, -75.0152],
       zoomControl: false,
-      zoom: 5
+      zoom: 5,
     });
-    // Mapa base: OpenStreeMap
+
+
+    // Mapas base
     const lightLayer = L.tileLayer(
       'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
       { attribution: 'DEVIDA', maxZoom: 19 }
     );
-    // Mapa base: Satellite
     const satelliteLayer = L.tileLayer(
       'https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',
       { attribution: 'DEVIDA', maxZoom: 20 }
     );
-
     satelliteLayer.addTo(this.map);
 
-    L.control.layers(
-      { 'Satellite': satelliteLayer, 'Light': lightLayer },
-      undefined,
-      { collapsed: true }
-    ).addTo(this.map);
+    L.control
+      .layers(
+        { Satellite: satelliteLayer, Light: lightLayer },
+        undefined,
+        { collapsed: true ,position: 'topright' }
+      )
+      .addTo(this.map);
 
-    // --- AQUI AGREGAMOS LA BARRA DE ESCALA ---
-    L.control.scale({
-      position: 'topleft',
-      metric: true,
-      imperial: false,
-      maxWidth: 100
-    }).addTo(this.map);
+    // Barra de escala
+    L.control
+      .scale({
+        position: 'topleft',
+        metric: true,
+        imperial: false,
+        maxWidth: 100,
+      })
+      .addTo(this.map);
 
+    // Leaflet Draw
+    this.map.addLayer(this.drawnItems);
+
+    const drawControl = new L.Control.Draw({
+      position: 'topright',
+      edit: {
+        featureGroup: this.drawnItems,
+        remove: true,
+      },
+      draw: {
+        polygon: true,
+        rectangle: true,
+        polyline: false,
+        circle: false,
+        marker: false,
+        circlemarker: false,
+      },
+    });
+
+    this.map.addControl(drawControl);
+    L.control.zoom({ position: 'topright' }).addTo(this.map);
+
+    this.map.on(L.Draw.Event.CREATED, (event: any) => {
+      const layer = event.layer;
+      this.drawnItems.addLayer(layer);
+
+      const geojson = layer.toGeoJSON();
+      console.log('Polígono dibujado:', geojson);
+    });
+
+    // ✅ Forzar recalculo después de añadir controles
+    this.map.on('layeradd', () => {
+      this.map.invalidateSize();
+    });
+
+    // ✅ Recalcular al cambiar el tamaño de pantalla
+    window.addEventListener('resize', () => {
+      this.map.invalidateSize();
+    });
+
+    // Refuerzo inicial
     setTimeout(() => {
       this.map.invalidateSize();
-    }, 200);
+    }, 400);
   }
-    // Geolocalización con spinner
-    async locateUser() {
-      this.isLoading = true;
-      try {
-        const coordinates = await Geolocation.getCurrentPosition({
-          enableHighAccuracy: true
-        });
 
-        const { latitude, longitude, altitude, accuracy, altitudeAccuracy, speed } = coordinates.coords;
+  // Geolocalización con spinner
+  async locateUser() {
+    this.isLoading = true;
+    try {
+      const coordinates = await Geolocation.getCurrentPosition({
+        enableHighAccuracy: true,
+      });
 
-        // Guardar valores para mostrar en el template
-       // Guardar valores para mostrar en el template
-       this.gpsData = {
-        lat: latitude !== null && latitude !== undefined ? parseFloat(latitude.toFixed(4)) : 0.0000,
-        lng: longitude !== null && longitude !== undefined ? parseFloat(longitude.toFixed(4)) : 0.0000,
-        alt: altitude !== null && altitude !== undefined ? parseFloat(altitude.toFixed(4)) : 0.0000,
-        vel: speed !== null && speed !== undefined ? parseFloat(speed.toFixed(2)) : 0.00,
-        accH: accuracy !== null && accuracy !== undefined ? parseFloat(accuracy.toFixed(4)) : 0.0000,
-        accV: altitudeAccuracy !== null && altitudeAccuracy !== undefined ? parseFloat(altitudeAccuracy.toFixed(2)) : 0.00,
+      const { latitude, longitude, altitude, accuracy, altitudeAccuracy, speed } =
+        coordinates.coords;
+
+      this.gpsData = {
+        lat: latitude ? parseFloat(latitude.toFixed(4)) : 0,
+        lng: longitude ? parseFloat(longitude.toFixed(4)) : 0,
+        alt: altitude ? parseFloat(altitude.toFixed(4)) : 0,
+        vel: speed ? parseFloat(speed.toFixed(2)) : 0,
+        accH: accuracy ? parseFloat(accuracy.toFixed(4)) : 0,
+        accV: altitudeAccuracy ? parseFloat(altitudeAccuracy.toFixed(2)) : 0,
       };
 
-        const lat = latitude;
-        const lng = longitude;
+      const lat = latitude;
+      const lng = longitude;
 
-        // Si ya existe círculo, actualizar posición
-        if (this.userCircle) {
-          this.userCircle.setLatLng([lat, lng]);
-          if (this.pulseCircle) this.pulseCircle.setLatLng([lat, lng]);
-        } else {
-          // Círculo central
-          this.userCircle = L.circle([lat, lng], {
-            color: '#ffff',
-            fillColor: '#0D9BD7',
-            fillOpacity: 1,
-            radius: 3,
-            weight: 1
-          }).addTo(this.map)
-
-          // Círculo pulsante inicial
-          this.pulseCircle = L.circle([lat, lng], {
-            color: '#0DA642',
-            fillColor: '#3880ff',
-            fillOpacity: 0.3,
-            radius: 3,
-            weight: 0
-          }).addTo(this.map);
-          // Animación pulsante
-          let growing = true;
-          let radius = 3;
-          const maxRadius = 50;
-
-          this.pulseInterval = setInterval(() => {
-            if (!this.pulseCircle) return;
-
-            // aumentar el radio
-            radius += 1; // velocidad de crecimiento, ajustable
-            if (radius >= maxRadius) {
-              radius = 3; // reinicia para crear pulso repetido
-            }
-            this.pulseCircle.setRadius(radius);
-            const opacity = 0.6 * (maxRadius - radius) / maxRadius; // opacidad decreciente
-            this.pulseCircle.setStyle({ fillOpacity: opacity });
-            }, 50);
-        }
-        this.map.setView([lat, lng], 19);
-      } catch (error) {
-        console.error('Error obteniendo ubicación', error);
-      } finally {
-        this.isLoading = false;  // 👈 desactivar spinner siempre
-      }
-    }
-
-    clearLocation() {
-      // Eliminar animación si existe
-      if (this.pulseInterval) {
-        clearInterval(this.pulseInterval);
-        this.pulseInterval = null;
-      }
-
-      // Eliminar círculos si existen
       if (this.userCircle) {
-        this.map.removeLayer(this.userCircle);
-        this.userCircle = undefined;
+        this.userCircle.setLatLng([lat, lng]);
+        if (this.pulseCircle) this.pulseCircle.setLatLng([lat, lng]);
+      } else {
+        this.userCircle = L.circle([lat, lng], {
+          color: '#ffff',
+          fillColor: '#0D9BD7',
+          fillOpacity: 1,
+          radius: 3,
+          weight: 1,
+        }).addTo(this.map);
+
+        this.pulseCircle = L.circle([lat, lng], {
+          color: '#0DA642',
+          fillColor: '#3880ff',
+          fillOpacity: 0.3,
+          radius: 3,
+          weight: 0,
+        }).addTo(this.map);
+
+        let radius = 3;
+        const maxRadius = 50;
+
+        this.pulseInterval = setInterval(() => {
+          if (!this.pulseCircle) return;
+          radius += 1;
+          if (radius >= maxRadius) radius = 3;
+          this.pulseCircle.setRadius(radius);
+          const opacity = 0.6 * (maxRadius - radius) / maxRadius;
+          this.pulseCircle.setStyle({ fillOpacity: opacity });
+        }, 50);
       }
-      if (this.pulseCircle) {
-        this.map.removeLayer(this.pulseCircle);
-        this.pulseCircle = undefined;
-      }
+      this.map.setView([lat, lng], 19);
+    } catch (error) {
+      console.error('Error obteniendo ubicación', error);
+    } finally {
+      this.isLoading = false;
     }
+  }
+
+  clearLocation() {
+    if (this.pulseInterval) {
+      clearInterval(this.pulseInterval);
+      this.pulseInterval = null;
+    }
+    if (this.userCircle) {
+      this.map.removeLayer(this.userCircle);
+      this.userCircle = undefined;
+    }
+    if (this.pulseCircle) {
+      this.map.removeLayer(this.pulseCircle);
+      this.pulseCircle = undefined;
+    }
+  }
 }

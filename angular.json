@@ -37,7 +37,12 @@
                 "output": "assets"
               }
             ],
-            "styles": ["src/global.scss", "src/theme/variables.scss","node_modules/leaflet/dist/leaflet.css"],
+            "styles": [
+              "src/global.scss",
+              "src/theme/variables.scss",
+              "node_modules/leaflet/dist/leaflet.css",
+              "node_modules/leaflet-draw/dist/leaflet.draw.css"
+            ],
             "scripts": [],
             "browser": "src/main.ts"
           },
@@ -111,7 +116,12 @@
                 "output": "assets"
               }
             ],
-            "styles": ["src/global.scss", "src/theme/variables.scss","node_modules/leaflet/dist/leaflet.css"],
+            "styles": [
+              "src/global.scss",
+              "src/theme/variables.scss",
+              "node_modules/leaflet/dist/leaflet.css",
+              "node_modules/leaflet-draw/dist/leaflet.draw.css"
+            ],
             "scripts": []
           },
           "configurations": {

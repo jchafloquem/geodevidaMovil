@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+
+
 import {
   IonHeader,
   IonToolbar,
@@ -17,6 +19,7 @@ import {
   IonListHeader,
   IonLabel,
   IonNote, // <-- ¡Importado para el texto "Requerido"!
+
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { closeOutline } from 'ionicons/icons';
@@ -43,6 +46,7 @@ import { closeOutline } from 'ionicons/icons';
     IonListHeader,
     IonLabel,
     IonNote, // <-- Asegúrate de que esté aquí.
+    
   ],
 })
 export class PolygonModalPage {

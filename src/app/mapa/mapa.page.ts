@@ -8,7 +8,6 @@ import {
   IonToolbar,
   IonIcon,
   IonLoading,
-
 } from '@ionic/angular/standalone';
 
 /* Librerías de Leaflet */
@@ -20,7 +19,9 @@ import { Geolocation } from '@capacitor/geolocation';
 /* Ionicons */
 import { addIcons } from 'ionicons';
 import { locateOutline } from 'ionicons/icons';
-import { routes } from '../app.routes';
+
+import { ModalController } from '@ionic/angular/standalone';
+import { PolygonModalPage } from '../polygon-modal/polygon-modal.page'; // Asegúrate de importar tu modal
 
 @Component({
   selector: 'app-mapa',
@@ -55,7 +56,7 @@ export class MapaPage {
     accV: number | null;
   } | null = null;
 
-  constructor() {
+  constructor(private modalController: ModalController) {
     addIcons({ locateOutline, trashOutline });
   }
 
@@ -86,7 +87,7 @@ export class MapaPage {
       .layers(
         { Satellite: satelliteLayer, Light: lightLayer },
         undefined,
-        { collapsed: true ,position: 'topright' }
+        { collapsed: true, position: 'topright' }
       )
       .addTo(this.map);
 
@@ -100,7 +101,7 @@ export class MapaPage {
       })
       .addTo(this.map);
 
-       // Leaflet Draw
+    // Leaflet Draw
     this.map.addLayer(this.drawnItems);
 
     const drawControl = new L.Control.Draw({
@@ -143,20 +144,13 @@ export class MapaPage {
 
       const geojson = layer.toGeoJSON();
       console.log('Polígono dibujado:', geojson);
+      this.presentModal(geojson);
     });
 
     // ✅ Forzar recalculo después de añadir controles
     this.map.on('layeradd', () => {
       this.map.invalidateSize();
     });
-
-
-
-
-
-
-
-
 
     // ✅ Recalcular al cambiar el tamaño de pantalla
     window.addEventListener('resize', () => {
@@ -168,6 +162,35 @@ export class MapaPage {
       this.map.invalidateSize();
     }, 400);
   }
+
+  // AÑADE ESTE MÉTODO AQUÍ
+  async presentModal(geojson: any) {
+    const modal = await this.modalController.create({
+      component: PolygonModalPage,
+    });
+
+    modal.present();
+
+    const { data, role } = await modal.onWillDismiss();
+
+    if (role === 'confirm') {
+      // Si el usuario guardó los datos
+      const polygonData = {
+        ...geojson,
+        properties: data,
+      };
+      console.log('Polígono con datos:', polygonData);
+
+      // Aquí puedes guardar polygonData en una base de datos o en un servicio
+      // Por ejemplo: this.dataService.savePolygon(polygonData);
+    } else {
+      // Si el usuario canceló, puedes eliminar el polígono recién creado
+      this.drawnItems.removeLayer(this.drawnItems.getLayers()[this.drawnItems.getLayers().length - 1]);
+      console.log('El polígono fue eliminado por cancelación.');
+    }
+  }
+
+  // Elimina la línea 'throw new Error()' ya que se reemplaza con la implementación completa.
 
   // Geolocalización con spinner
   async locateUser() {

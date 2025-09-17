@@ -1,0 +1,47 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>Datos del Polígono</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="cancel()">
+        <ion-icon slot="icon-only" name="close-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <form [formGroup]="polygonForm" (ngSubmit)="save()">
+    <ion-item>
+      <ion-input label="Nombre" formControlName="name" placeholder="Ej: Zona de cultivo"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-input label="Tipo" formControlName="type" placeholder="Ej: Agrícola"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-item>
+        <ion-input label="DNI" formControlName="dni" type="text" inputmode="numeric" placeholder="Ingrese DNI (8 dígitos)"></ion-input>
+      </ion-item>
+    </ion-item>
+    <ion-item>
+      <ion-input label="Apellido Paterno" formControlName="apellido_paterno" placeholder="Ej: García"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-input label="Apellido Materno" formControlName="apellido_materno" placeholder="Ej: López"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-input label="Nombres" formControlName="nombres" placeholder="Ej: Juan"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-input label="Organización" formControlName="organizacion" placeholder="Ej: Cooperativa El Sol"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-input label="Participante" formControlName="participante" placeholder="Ej: Participante A"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-input label="Fecha de Nacimiento" formControlName="fecha_de_nacimiento" type="date"></ion-input>
+    </ion-item>
+    <ion-button expand="full" type="submit" [disabled]="!polygonForm.valid">Guardar</ion-button>
+  </form>
+  <ion-button (click)="logFormState()">Check Form State</ion-button>
+</ion-content>

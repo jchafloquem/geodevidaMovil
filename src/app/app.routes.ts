@@ -13,5 +13,9 @@ export const routes: Routes = [
     path: '',
     redirectTo: 'mapa',
     pathMatch: 'full',
+  },  {
+    path: 'polygon-modal',
+    loadComponent: () => import('./polygon-modal/polygon-modal.page').then( m => m.PolygonModalPage)
   },
+
 ];

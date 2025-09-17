@@ -8,12 +8,11 @@ import {
   IonToolbar,
   IonIcon,
   IonLoading,
+
 } from '@ionic/angular/standalone';
 
-/* Libreria leaflet */
+/* Librerías de Leaflet */
 import * as L from 'leaflet';
-import 'leaflet-draw';
-
 
 /* Librerias capacitor */
 import { Geolocation } from '@capacitor/geolocation';
@@ -21,6 +20,7 @@ import { Geolocation } from '@capacitor/geolocation';
 /* Ionicons */
 import { addIcons } from 'ionicons';
 import { locateOutline } from 'ionicons/icons';
+import { routes } from '../app.routes';
 
 @Component({
   selector: 'app-mapa',
@@ -71,7 +71,6 @@ export class MapaPage {
       zoom: 5,
     });
 
-
     // Mapas base
     const lightLayer = L.tileLayer(
       'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
@@ -101,7 +100,7 @@ export class MapaPage {
       })
       .addTo(this.map);
 
-    // Leaflet Draw
+       // Leaflet Draw
     this.map.addLayer(this.drawnItems);
 
     const drawControl = new L.Control.Draw({
@@ -150,6 +149,14 @@ export class MapaPage {
     this.map.on('layeradd', () => {
       this.map.invalidateSize();
     });
+
+
+
+
+
+
+
+
 
     // ✅ Recalcular al cambiar el tamaño de pantalla
     window.addEventListener('resize', () => {

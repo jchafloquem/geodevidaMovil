@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { SharedModule } from '../shared/shared-module'; // Importa el módulo compartido
+
 
 
 import {
@@ -46,7 +48,7 @@ import { closeOutline } from 'ionicons/icons';
     IonListHeader,
     IonLabel,
     IonNote, // <-- Asegúrate de que esté aquí.
-    
+    SharedModule
   ],
 })
 export class PolygonModalPage {
@@ -65,6 +67,20 @@ export class PolygonModalPage {
       cultivo: ['', Validators.required],
     });
   }
+
+  onFormChange(controlName: string) {
+    // Usa el nombre del campo para obtener el control de forma dinámica
+    const formControl = this.polygonForm.get(controlName);
+
+    if (formControl && formControl.value) {
+      // Convierte el valor a mayúsculas
+      const capitalizedValue = formControl.value.toUpperCase();
+
+      // Actualiza el valor del campo específico
+      formControl.setValue(capitalizedValue, { emitEvent: false });
+    }
+  }
+
   onDniInput(event: any) {
     // Obtiene el valor actual del campo de entrada
     const inputValue = event.target.value;

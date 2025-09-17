@@ -21,7 +21,7 @@ import { addIcons } from 'ionicons';
 import { locateOutline } from 'ionicons/icons';
 
 import { ModalController } from '@ionic/angular/standalone';
-import { PolygonModalPage } from './polygon-modal/polygon-modal.page'; // Asegúrate de importar tu modal
+import { PolygonModalPage } from './modal/polygon-modal.page'; // Asegúrate de importar tu modal
 
 @Component({
   selector: 'app-mapa',

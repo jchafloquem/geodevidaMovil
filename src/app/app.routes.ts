@@ -16,7 +16,7 @@ export const routes: Routes = [
   },
   {
     path: 'polygon-modal',
-    loadComponent: () => import('./mapa/polygon-modal/polygon-modal.page').then( m => m.PolygonModalPage)
+    loadComponent: () => import('./mapa/modal/polygon-modal.page').then( m => m.PolygonModalPage)
   },
 
 ];

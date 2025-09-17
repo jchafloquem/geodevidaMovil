@@ -11,37 +11,139 @@
 
 <ion-content class="ion-padding">
   <form [formGroup]="polygonForm" (ngSubmit)="save()">
-    <ion-item>
-      <ion-input label="Nombre" formControlName="name" placeholder="Ej: Zona de cultivo"></ion-input>
-    </ion-item>
-    <ion-item>
-      <ion-input label="Tipo" formControlName="type" placeholder="Ej: Agrícola"></ion-input>
-    </ion-item>
+    <ion-list>
+      <ion-list-header>
+        <ion-label>Datos del Participante</ion-label>
+      </ion-list-header>
 
-    <ion-item>
-      <ion-item>
-        <ion-input label="DNI" formControlName="dni" type="text" inputmode="numeric" placeholder="Ingrese DNI (8 dígitos)"></ion-input>
+      <ion-item fill="outline">
+        <ion-input
+          label="DNI"
+          label-placement="floating"
+          formControlName="dni"
+          type="text"
+          inputmode="numeric"
+          maxlength="8"
+          pattern="[0-9]{8}"
+          placeholder="Ej: 12345678"
+          (input)="onDniInput($event)"
+        ></ion-input>
+        <ion-note
+          slot="end"
+          color="danger"
+          *ngIf="polygonForm.get('dni')?.invalid && (polygonForm.get('dni')?.dirty || polygonForm.get('dni')?.touched)"
+        >
+          (Requerido)
+        </ion-note>
       </ion-item>
-    </ion-item>
-    <ion-item>
-      <ion-input label="Apellido Paterno" formControlName="apellido_paterno" placeholder="Ej: García"></ion-input>
-    </ion-item>
-    <ion-item>
-      <ion-input label="Apellido Materno" formControlName="apellido_materno" placeholder="Ej: López"></ion-input>
-    </ion-item>
-    <ion-item>
-      <ion-input label="Nombres" formControlName="nombres" placeholder="Ej: Juan"></ion-input>
-    </ion-item>
-    <ion-item>
-      <ion-input label="Organización" formControlName="organizacion" placeholder="Ej: Cooperativa El Sol"></ion-input>
-    </ion-item>
-    <ion-item>
-      <ion-input label="Participante" formControlName="participante" placeholder="Ej: Participante A"></ion-input>
-    </ion-item>
-    <ion-item>
-      <ion-input label="Fecha de Nacimiento" formControlName="fecha_de_nacimiento" type="date"></ion-input>
-    </ion-item>
-    <ion-button expand="full" type="submit" [disabled]="!polygonForm.valid">Guardar</ion-button>
+
+      <ion-item fill="outline">
+        <ion-input
+          label="Nombres"
+          label-placement="floating"
+          formControlName="nombres"
+        ></ion-input>
+        <ion-note
+          slot="end"
+          color="danger"
+          *ngIf="polygonForm.get('nombres')?.invalid && (polygonForm.get('nombres')?.dirty || polygonForm.get('nombres')?.touched)"
+          >(Requerido)</ion-note
+        >
+      </ion-item>
+      <ion-item fill="outline">
+        <ion-input
+          label="Apellido Paterno"
+          label-placement="floating"
+          formControlName="apellido_paterno"
+        ></ion-input>
+        <ion-note
+          slot="end"
+          color="danger"
+          *ngIf="polygonForm.get('apellido_paterno')?.invalid && (polygonForm.get('apellido_paterno')?.dirty || polygonForm.get('apellido_paterno')?.touched)"
+          >(Requerido)</ion-note
+        >
+      </ion-item>
+
+      <ion-item fill="outline">
+        <ion-input
+          label="Apellido Materno"
+          label-placement="floating"
+          formControlName="apellido_materno"
+        ></ion-input>
+        <ion-note
+          slot="end"
+          color="danger"
+          *ngIf="polygonForm.get('apellido_materno')?.invalid && (polygonForm.get('apellido_materno')?.dirty || polygonForm.get('apellido_materno')?.touched)"
+          >(Requerido)</ion-note
+        >
+      </ion-item>
+
+      <ion-item fill="outline">
+        <ion-input
+          label="Fecha de Nacimiento"
+          label-placement="floating"
+          formControlName="fecha_de_nacimiento"
+          type="date"
+        ></ion-input>
+        <ion-note
+          slot="end"
+          color="danger"
+          *ngIf="polygonForm.get('fecha_de_nacimiento')?.invalid && (polygonForm.get('fecha_de_nacimiento')?.dirty || polygonForm.get('fecha_de_nacimiento')?.touched)"
+          >(Requerido)</ion-note
+        >
+      </ion-item>
+    </ion-list>
+
+    <ion-list>
+      <ion-list-header>
+        <ion-label>Datos de la Parcela</ion-label>
+      </ion-list-header>
+
+      <ion-item fill="outline">
+        <ion-input
+          label="Organización"
+          label-placement="floating"
+          formControlName="organizacion"
+        ></ion-input>
+        <ion-note
+          slot="end"
+          color="danger"
+          *ngIf="polygonForm.get('organizacion')?.invalid && (polygonForm.get('organizacion')?.dirty || polygonForm.get('organizacion')?.touched)"
+          >(Requerido)</ion-note
+        >
+      </ion-item>
+
+      <ion-item fill="outline">
+        <ion-input
+          label="Participante"
+          label-placement="floating"
+          formControlName="participante"
+        ></ion-input>
+        <ion-note
+          slot="end"
+          color="danger"
+          *ngIf="polygonForm.get('participante')?.invalid && (polygonForm.get('participante')?.dirty || polygonForm.get('participante')?.touched)"
+          >(Requerido)</ion-note
+        >
+      </ion-item>
+
+      <ion-item fill="outline">
+        <ion-input
+          label="Cultivo"
+          label-placement="floating"
+          formControlName="cultivo"
+        ></ion-input>
+        <ion-note
+          slot="end"
+          color="danger"
+          *ngIf="polygonForm.get('cultivo')?.invalid && (polygonForm.get('cultivo')?.dirty || polygonForm.get('cultivo')?.touched)"
+          >(Requerido)</ion-note
+        >
+      </ion-item>
+    </ion-list>
+
+    <ion-button expand="full" type="submit" [disabled]="!polygonForm.valid">
+      Guardar
+    </ion-button>
   </form>
-  <ion-button (click)="logFormState()">Check Form State</ion-button>
 </ion-content>

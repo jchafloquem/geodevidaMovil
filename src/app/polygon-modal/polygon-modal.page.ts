@@ -12,7 +12,11 @@ import {
   IonItem,
   IonButtons,
   ModalController,
+  IonText,
+  IonList,
+  IonListHeader,
   IonLabel,
+  IonNote, // <-- ¡Importado para el texto "Requerido"!
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { closeOutline } from 'ionicons/icons';
@@ -24,9 +28,8 @@ import { closeOutline } from 'ionicons/icons';
   standalone: true,
   imports: [
     CommonModule,
-    FormsModule, // <-- Asegúrate de que estén aquí
-    ReactiveFormsModule, // <-- Asegúrate de que estén aquí
-    // ... el resto de tus importaciones de Ionic
+    FormsModule,
+    ReactiveFormsModule,
     IonHeader,
     IonToolbar,
     IonTitle,
@@ -36,7 +39,10 @@ import { closeOutline } from 'ionicons/icons';
     IonInput,
     IonItem,
     IonButtons,
-
+    IonList,
+    IonListHeader,
+    IonLabel,
+    IonNote, // <-- Asegúrate de que esté aquí.
   ],
 })
 export class PolygonModalPage {
@@ -45,17 +51,29 @@ export class PolygonModalPage {
   constructor(private modalController: ModalController, private fb: FormBuilder) {
     addIcons({ closeOutline });
     this.polygonForm = this.fb.group({
-      name: ['', Validators.required],
-      type: ['', Validators.required],
-      dni: ['', [Validators.required, Validators.pattern('^[0-9]{8}$')]], // DNI de 8 dígitos
+      dni: ['', [Validators.required, Validators.pattern('^[0-9]{8}$')]],
       apellido_paterno: ['', Validators.required],
       apellido_materno: ['', Validators.required],
       nombres: ['', Validators.required],
+      fecha_de_nacimiento: ['', Validators.required],
       organizacion: ['', Validators.required],
       participante: ['', Validators.required],
-      fecha_de_nacimiento: ['', Validators.required],
+      cultivo: ['', Validators.required],
     });
   }
+  onDniInput(event: any) {
+    // Obtiene el valor actual del campo de entrada
+    const inputValue = event.target.value;
+
+    // Usa una expresión regular para eliminar cualquier caracter que NO sea un dígito (0-9)
+    const sanitizedValue = inputValue.replace(/[^0-9]/g, '');
+
+    // Actualiza el valor del FormControl del DNI con el valor limpio
+    // El segundo argumento, `{ emitEvent: false }`, evita un bucle infinito de eventos
+    this.polygonForm.get('dni')?.setValue(sanitizedValue, { emitEvent: false });
+  }
+
+
 
   cancel() {
     return this.modalController.dismiss(null, 'cancel');
@@ -66,13 +84,5 @@ export class PolygonModalPage {
       return this.modalController.dismiss(this.polygonForm.value, 'confirm');
     }
     return;
-  }
-
-  logFormState() {
-    console.log('Form is valid:', this.polygonForm.valid);
-    console.log('Form value:', this.polygonForm.value);
-    console.log('Form errors:', this.polygonForm.errors);
-    console.log('DNI control errors:', this.polygonForm.get('dni')?.errors);
-    console.log('Date control errors:', this.polygonForm.get('fecha_de_nacimiento')?.errors);
   }
 }

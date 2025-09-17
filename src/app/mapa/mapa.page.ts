@@ -14,6 +14,7 @@ import {
 import * as L from 'leaflet';
 import 'leaflet-draw';
 
+
 /* Librerias capacitor */
 import { Geolocation } from '@capacitor/geolocation';
 
@@ -110,8 +111,23 @@ export class MapaPage {
         remove: true,
       },
       draw: {
-        polygon: true,
-        rectangle: true,
+        polygon: {
+          allowIntersection: false,
+          shapeOptions: {
+            color: '#ff0000', // Rojo
+            fillColor: '#ff0000', // Rojo
+            fillOpacity: 0.2, // Ligera transparencia
+            weight: 3, // Borde más grueso
+          },
+        },
+        rectangle: {
+          shapeOptions: {
+            color: '#ff0000',
+            fillColor: '#ff0000',
+            fillOpacity: 0.2,
+            weight: 3,
+          },
+        },
         polyline: false,
         circle: false,
         marker: false,

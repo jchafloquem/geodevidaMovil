@@ -57,7 +57,9 @@ export class MapaPage {
     accV: number | null;
   } | null = null;
 
-  constructor(private modalController: ModalController) {
+  constructor(private modalController: ModalController
+                      
+  ) {
     addIcons({ locateOutline, trashOutline });
   }
 

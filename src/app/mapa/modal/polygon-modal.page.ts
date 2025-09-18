@@ -17,7 +17,7 @@ import {
   IonItem,
   IonButtons,
   ModalController,
-  IonText,
+  //IonText,
   IonList,
   IonListHeader,
   IonLabel,
@@ -30,6 +30,9 @@ import {
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { closeOutline } from 'ionicons/icons';
+
+// 🔹 Importar servicio SQLite
+import { SqliteService } from '../services/sqlite.service';
 
 @Component({
   selector: 'app-polygon-modal',
@@ -57,14 +60,19 @@ import { closeOutline } from 'ionicons/icons';
     IonGrid,
     IonRow,
     IonCol,
-    IonText,
+    //IonText,
     SharedModule
   ],
 })
 export class PolygonModalPage {
   polygonForm: FormGroup;
   fotosBase64: string[] = [];
-  constructor(private modalController: ModalController, private fb: FormBuilder) {
+  constructor(  private modalController: ModalController,
+              private fb: FormBuilder,
+              private sqliteService: SqliteService
+
+            ) {
+    this.init();
     addIcons({ closeOutline });
     this.polygonForm = this.fb.group({
       dni: ['', [Validators.required, Validators.pattern('^[0-9]{8}$')]],
@@ -77,6 +85,10 @@ export class PolygonModalPage {
       cultivo: ['', Validators.required],
       fotos: [[]]
     });
+
+  }
+  async init() {
+    await this.sqliteService.initDB();
   }
 
   onFormChange(controlName: string) {
@@ -176,11 +188,24 @@ export class PolygonModalPage {
     return this.modalController.dismiss(null, 'cancel');
   }
 
-  save() {
+  async save(): Promise<void> {
     if (this.polygonForm.valid) {
-      return this.modalController.dismiss(this.polygonForm.value, 'confirm');
+      try {
+        const coords = 'MULTIPOLYGON(((...)))';
+
+        await this.sqliteService.addPoligono(this.polygonForm.value, coords);
+
+        console.log('✅ Polígono guardado en SQLite');
+
+        await this.modalController.dismiss(this.polygonForm.value, 'confirm');
+      } catch (err) {
+        console.error('❌ Error al guardar en SQLite:', err);
+      }
+    } else {
+      console.warn('⚠️ Formulario inválido');
     }
-    return;
   }
+
+
 
 }

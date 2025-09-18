@@ -154,6 +154,23 @@
           >(Requerido)</ion-note
         >
       </ion-item>
+
+      <ion-item>
+        <ion-label>Fotos</ion-label> 
+        <ion-button expand="block" (click)="takePhoto()">📷 Tomar Foto</ion-button>
+      </ion-item>
+
+      <ion-grid>
+        <ion-row>
+          <ion-col size="6" *ngFor="let foto of fotosBase64; let i = index">
+            <ion-img [src]="foto"></ion-img>
+            <ion-button color="danger" expand="block" size="small" (click)="eliminarFoto(i)">
+              🗑 Eliminar
+            </ion-button>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+
     </ion-list>
 
     <ion-button expand="full" type="submit" [disabled]="!polygonForm.valid">

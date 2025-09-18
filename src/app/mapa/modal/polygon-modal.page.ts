@@ -3,7 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { SharedModule } from '../shared/shared-module'; // Importa el módulo compartido
 
-
+import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
+import { Filesystem, Directory } from '@capacitor/filesystem';
 
 import {
   IonHeader,
@@ -21,6 +22,10 @@ import {
   IonListHeader,
   IonLabel,
   IonNote, // <-- ¡Importado para el texto "Requerido"!
+  IonImg,
+  IonGrid,
+  IonRow,
+  IonCol
 
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
@@ -48,12 +53,17 @@ import { closeOutline } from 'ionicons/icons';
     IonListHeader,
     IonLabel,
     IonNote, // <-- Asegúrate de que esté aquí.
+    IonImg,
+    IonGrid,
+    IonRow,
+    IonCol,
+    IonText,
     SharedModule
   ],
 })
 export class PolygonModalPage {
   polygonForm: FormGroup;
-
+  fotosBase64: string[] = [];
   constructor(private modalController: ModalController, private fb: FormBuilder) {
     addIcons({ closeOutline });
     this.polygonForm = this.fb.group({
@@ -65,6 +75,7 @@ export class PolygonModalPage {
       organizacion: ['', Validators.required],
       participante: ['', Validators.required],
       cultivo: ['', Validators.required],
+      fotos: [[]]
     });
   }
 
@@ -93,7 +104,73 @@ export class PolygonModalPage {
     this.polygonForm.get('dni')?.setValue(sanitizedValue, { emitEvent: false });
   }
 
+  fotoBase64: string | null = null;
 
+  async takePhoto() {
+    try {
+      // Verificar límite de 5 fotos
+      const fotosActuales = this.polygonForm.get('fotos')?.value || [];
+      if (fotosActuales.length >= 5) {
+        console.warn('⚠️ Límite de 5 fotos alcanzado');
+        return;
+      }
+
+      const image = await Camera.getPhoto({
+        quality: 70,
+        allowEditing: false,
+        resultType: CameraResultType.Base64,
+        source: CameraSource.Camera,
+        saveToGallery: true, // también en galería
+      });
+
+      const fileName = `photo_${Date.now()}.jpeg`;
+
+      // Crear carpeta si no existe
+      await Filesystem.mkdir({
+        path: 'poligonos',
+        directory: Directory.Data,
+        recursive: true,
+      }).catch(() => { });
+
+      // Guardar foto en almacenamiento interno
+      await Filesystem.writeFile({
+        path: `poligonos/${fileName}`,
+        data: image.base64String || '',
+        directory: Directory.Data,
+      });
+
+      // Guardar referencia en el form (array de nombres de archivo)
+      fotosActuales.push(fileName);
+      this.polygonForm.patchValue({ fotos: fotosActuales });
+
+      // Mostrar en vista previa (array base64 para UI)
+      this.fotosBase64.push(`data:image/jpeg;base64,${image.base64String}`);
+
+      console.log('✅ Foto guardada:', fileName);
+    } catch (err) {
+      console.error('❌ Error al tomar foto:', err);
+    }
+  }
+
+  eliminarFoto(index: number) {
+    // Eliminar de la UI
+    this.fotosBase64.splice(index, 1);
+
+    // Eliminar de referencias del form
+    const fotos = this.polygonForm.get('fotos')?.value || [];
+    fotos.splice(index, 1);
+    this.polygonForm.patchValue({ fotos });
+  }
+
+
+
+  async loadPhoto(fileName: string) {
+    const file = await Filesystem.readFile({
+      path: `poligonos/${fileName}`,
+      directory: Directory.Data,
+    });
+    return `data:image/jpeg;base64,${file.data}`;
+  }
 
   cancel() {
     return this.modalController.dismiss(null, 'cancel');
@@ -105,4 +182,5 @@ export class PolygonModalPage {
     }
     return;
   }
+
 }

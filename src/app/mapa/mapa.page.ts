@@ -23,6 +23,7 @@ import { locateOutline } from 'ionicons/icons';
 import { ModalController } from '@ionic/angular/standalone';
 import { PolygonModalPage } from './modal/polygon-modal.page'; // Asegúrate de importar tu modal
 
+
 @Component({
   selector: 'app-mapa',
   templateUrl: './mapa.page.html',
@@ -269,4 +270,5 @@ export class MapaPage {
       this.pulseCircle = undefined;
     }
   }
+
 }
